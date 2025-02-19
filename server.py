@@ -21,4 +21,6 @@ def webhook(scope_id):
     return jsonify({"status": "success", "message": "Webhook received"}), 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)  # Railway работает на порту 8080
+    app.run(host="0.0.0.0", port=8080)
+
+    # 1# Railway работает на порту 8080

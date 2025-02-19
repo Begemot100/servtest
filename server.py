@@ -4,17 +4,20 @@ app = Flask(__name__)
 
 @app.route("/webhook/<scope_id>", methods=["POST"])
 def webhook(scope_id):
-    headers = dict(request.headers)  # Сохраняем заголовки запроса
+    headers = dict(request.headers)  # Получаем заголовки запроса
     print(f"📩 Заголовки запроса: {headers}")  # Логируем заголовки
 
-    # Проверяем Content-Type
-    if "Content-Type" not in headers or headers["Content-Type"] != "application/json":
-        return jsonify({"error": "Unsupported Media Type", "received_headers": headers}), 415  # Ошибка 415
+    # Проверяем, какой Content-Type пришёл
+    if "Content-Type" not in headers:
+        return jsonify({"error": "Missing Content-Type", "received_headers": headers}), 415
+
+    if headers["Content-Type"] != "application/json":
+        return jsonify({"error": "Unsupported Content-Type", "received_headers": headers}), 415
 
     try:
         data = request.json  # Пробуем разобрать JSON
     except Exception as e:
-        return jsonify({"error": "Invalid JSON", "exception": str(e)}), 400  # Ошибка JSON
+        return jsonify({"error": "Invalid JSON", "exception": str(e)}), 400
 
     print(f"📩 Тело запроса: {data}")  # Логируем тело запроса
 

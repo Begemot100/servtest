@@ -9,9 +9,8 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Подключение к PostgreSQL на Railway
+# Подключение к PostgreSQL
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:KpoILsSduSWZjmMzjMyGGVvqHYAAODXz@postgres-q5my.railway.internal:5432/railway")
-
 conn = psycopg2.connect(DATABASE_URL)
 cur = conn.cursor()
 
@@ -28,12 +27,15 @@ conn.commit()
 
 @app.route("/webhook/<scope_id>", methods=["POST"])
 def webhook(scope_id):
+    # Проверяем Content-Type
     if request.content_type != "application/json":
+        print(f"❌ Webhook {scope_id}: Ошибка 415 - Неправильный Content-Type: {request.content_type}")
         return jsonify({"status": "error", "message": "Unsupported Media Type"}), 415
 
     try:
         data = request.get_json()
-        if data is None:
+        if not data:
+            print(f"❌ Webhook {scope_id}: Ошибка - Пустой JSON")
             raise ValueError("Пустое тело запроса")
 
         # Сохраняем Webhook в PostgreSQL

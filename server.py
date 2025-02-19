@@ -7,7 +7,7 @@ def webhook(scope_id):
     headers = dict(request.headers)  # Получаем заголовки запроса
     print(f"📩 Заголовки запроса: {headers}")  # Логируем заголовки
 
-    # Проверяем, какой Content-Type пришёл
+    # Проверяем Content-Type
     if "Content-Type" not in headers:
         return jsonify({"error": "Missing Content-Type", "received_headers": headers}), 415
 
@@ -24,4 +24,4 @@ def webhook(scope_id):
     return jsonify({"status": "success", "message": "Webhook received"}), 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=8080)  # Используем порт 8080 для Railway

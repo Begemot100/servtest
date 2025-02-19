@@ -4,24 +4,21 @@ app = Flask(__name__)
 
 @app.route("/webhook/<scope_id>", methods=["POST"])
 def webhook(scope_id):
-    headers = dict(request.headers)  # Получаем заголовки запроса
-    print(f"📩 Заголовки запроса: {headers}")  # Логируем заголовки
+    headers = dict(request.headers)  # Логируем заголовки
+    print(f"📩 Заголовки запроса: {headers}")
 
     # Проверяем Content-Type
-    if "Content-Type" not in headers:
-        return jsonify({"error": "Missing Content-Type", "received_headers": headers}), 415
-
-    if headers["Content-Type"] != "application/json":
+    content_type = headers.get("Content-Type", "")
+    if "application/json" not in content_type:
         return jsonify({"error": "Unsupported Content-Type", "received_headers": headers}), 415
 
     try:
         data = request.json  # Пробуем разобрать JSON
+        print(f"📩 Тело запроса: {data}")
     except Exception as e:
         return jsonify({"error": "Invalid JSON", "exception": str(e)}), 400
-
-    print(f"📩 Тело запроса: {data}")  # Логируем тело запроса
 
     return jsonify({"status": "success", "message": "Webhook received"}), 200
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)  # Используем порт 8080 для Railway
+    app.run(host="0.0.0.0", port=8080)  # Railway работает на порту 8080
